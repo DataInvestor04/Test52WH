@@ -141,7 +141,7 @@ def create_stock_card(row):
                 <div>
                     <div class="stock-title">
                     <span>
-                        <a href="https://www.screener.in/company/{Symbol}">
+                        <a href="https://www.screener.in/company/{symbol}">
                             {row['Symbol']}   
                         </a>
                         <strong>       ({row['Series Type']})</strong>
