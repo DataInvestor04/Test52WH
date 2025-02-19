@@ -1,0 +1,3 @@
+plotpy
+pandas
+streamlit
