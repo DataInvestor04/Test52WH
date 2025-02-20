@@ -133,6 +133,7 @@ def create_stock_card(row):
         st.markdown('<div class="stock-card">', unsafe_allow_html=True)
         
         # Header Section
+        symbol = row['Symbol']
         col1, col2, col3 = st.columns([3, 1, 1])
         with col1:
             st.markdown(f"""
@@ -140,7 +141,7 @@ def create_stock_card(row):
                 <div>
                     <div class="stock-title">
                     <span>
-                        <a href="https://www.screener.in/company/row[{'Symbol'}]">
+                        <a href="https://www.screener.in/company/{symbol}">
                             {row['Symbol']}   
                         </a>
                         <strong>       ({row['Series Type']})</strong>
