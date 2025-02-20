@@ -140,7 +140,7 @@ def create_stock_card(row):
                 <div>
                     <div class="stock-title">
                     <span>
-                        <a href="https://www.screener.in/company/{'Symbol'}">
+                        <a href="https://www.screener.in/company/row[{'Symbol'}]">
                             {row['Symbol']}   
                         </a>
                         <strong>       ({row['Series Type']})</strong>
@@ -529,6 +529,20 @@ def main():
         filtered_data = data[data["Today's Date"].dt.strftime('%B %Y') == selected_month]
         date_display = selected_month
 
+        available_sectors = ['All'] + sorted(filtered_data['Sector'].unique().tolist())
+        selected_sectors = st.sidebar.selectbox("Filter by Sector:", available_sectors)
+
+
+        # Get series types from the date-filtered data
+        available_series = ['All'] + sorted(filtered_data['Series Type'].unique().tolist())
+        selected_series = st.sidebar.selectbox("Filter by Series:", available_series)
+
+            # Apply additional filters
+        if selected_sectors != 'All':
+            filtered_data = filtered_data[filtered_data['Sector'] == selected_sectors]
+        if selected_series != 'All':
+            filtered_data = filtered_data[filtered_data['Series Type'] == selected_series]
+
 
         
         if not filtered_data.empty:
@@ -618,22 +632,33 @@ def main():
             # Create the table with simplified column config
 
             
-            st.dataframe(
-                stock_table,
-                hide_index=True,
-                column_config={
-                    "Symbol": st.column_config.TextColumn("Symbol"),
-                    "Occurrences": st.column_config.ProgressColumn(
-                        "Frequency",
-                        help="Number of days stock appeared",
-                        format="%d times",
-                        min_value=1,
-                        max_value=max(stock_table["Occurrences"])
-                    ),
-                    "Series Type": "Series",
-                    "Sector": "Sector"
-                },
-                use_container_width=True
+            # st.dataframe(
+            #     stock_table,
+            #     hide_index=True,
+            #     column_config={
+            #         "Symbol": st.column_config.TextColumn("Symbol"),
+            #         "Occurrences": st.column_config.ProgressColumn(
+            #             "Frequency",
+            #             help="Number of days stock appeared",
+            #             format="%d times",
+            #             min_value=1,
+            #             max_value=max(stock_table["Occurrences"])
+            #         ),
+            #         "Series Type": "Series",
+            #         "Sector": "Sector"
+            #     },
+            #     use_container_width=True
+            # )
+            stock_table['Symbol'] = stock_table['Symbol'].apply(
+        lambda symbol: f'<a href="https://www.screener.in/company/{symbol}" target="_blank">{symbol}</a>'
+    )
+
+            st.write(
+                stock_table.to_html(
+                    escape=False,  # Ensures HTML tags are rendered
+                    index=False  # Hides the index
+                ),
+                unsafe_allow_html=True
             )
         else:
             st.warning(f"No data found for {selected_month}")
@@ -655,6 +680,20 @@ def main():
             (data["Today's Date"].dt.date <= end_date)
         ]
         date_display = f"{start_date.strftime('%d %b %Y')} to {end_date.strftime('%d %b %Y')}"
+
+        available_sectors = ['All'] + sorted(filtered_data['Sector'].unique().tolist())
+        selected_sectors = st.sidebar.selectbox("Filter by Sector:", available_sectors)
+
+
+        # Get series types from the date-filtered data
+        available_series = ['All'] + sorted(filtered_data['Series Type'].unique().tolist())
+        selected_series = st.sidebar.selectbox("Filter by Series:", available_series)
+
+            # Apply additional filters
+        if selected_sectors != 'All':
+            filtered_data = filtered_data[filtered_data['Sector'] == selected_sectors]
+        if selected_series != 'All':
+            filtered_data = filtered_data[filtered_data['Series Type'] == selected_series]
         
         if not filtered_data.empty:
             st.header(f"Analysis for {date_display}")
@@ -711,6 +750,7 @@ def main():
                 },
                 use_container_width=True
             )
+
             
             # Stock occurrences table
             st.markdown("### 📈 Most Frequent Stocks")
@@ -730,23 +770,34 @@ def main():
             stock_table = pd.merge(stock_occurrences, stock_info, on='Symbol')
             stock_table = stock_table.sort_values('Occurrences', ascending=False)
             
+            stock_table['Symbol'] = stock_table['Symbol'].apply(
+        lambda symbol: f'<a href="https://www.screener.in/company/{symbol}" target="_blank">{symbol}</a>'
+    )
             # Create the table with simplified column config
-            st.dataframe(
-                stock_table,
-                hide_index=True,
-                column_config={
-                    "Symbol": st.column_config.TextColumn("Symbol"),
-                    "Occurrences": st.column_config.ProgressColumn(
-                        "Frequency",
-                        help="Number of days stock appeared",
-                        format="%d times",
-                        min_value=1,
-                        max_value=max(stock_table["Occurrences"])
-                    ),
-                    "Series Type": "Series",
-                    "Sector": "Sector"
-                },
-                use_container_width=True
+            # st.dataframe(
+            #     stock_table,
+            #     hide_index=True,
+            #     column_config={
+            #         "Symbol": st.column_config.TextColumn("Symbol"),
+            #         "Occurrences": st.column_config.ProgressColumn(
+            #             "Frequency",
+            #             help="Number of days stock appeared",
+            #             format="%d times",
+            #             min_value=1,
+            #             max_value=max(stock_table["Occurrences"])
+            #         ),
+            #         "Series Type": "Series",
+            #         "Sector": "Sector"
+            #     },
+            #     use_container_width=True
+            # )
+
+            st.write(
+                stock_table.to_html(
+                    escape=False,  # Ensures HTML tags are rendered
+                    index=False  # Hides the index
+                ),
+                unsafe_allow_html=True
             )
         else:
             st.warning(f"No data found between {start_date} and {end_date}")
