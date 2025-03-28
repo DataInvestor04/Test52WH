@@ -7,9 +7,9 @@ import plotly.graph_objects as go
 def load_data(file):
     """Load and preprocess the data"""
     try:
-        # df = pd.read_csv(file)
-        url = "https://raw.githubusercontent.com/DataInvestor04/52WH/refs/heads/main/financial_metrics.csv"
-        df = pd.read_csv(url)
+        df = pd.read_csv(file)
+        # url = "https://raw.githubusercontent.com/DataInvestor04/52WH/refs/heads/main/financial_metrics.csv"
+        # df = pd.read_csv(url)
         df["Today's Date"] = pd.to_datetime(df["Today's Date"])
 
         # Clean percentage change column
