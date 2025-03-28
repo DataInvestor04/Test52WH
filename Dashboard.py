@@ -8,7 +8,7 @@ def load_data(file):
     """Load and preprocess the data"""
     try:
         # df = pd.read_csv(file)
-        url = "https://github.com/DataInvestor04/52WH/blob/main/financial_metrics.csv?plain=1"
+        url = "https://raw.githubusercontent.com/DataInvestor04/52WH/refs/heads/main/financial_metrics.csv"
         df = pd.read_csv(url)
         df["Today's Date"] = pd.to_datetime(df["Today's Date"])
 
